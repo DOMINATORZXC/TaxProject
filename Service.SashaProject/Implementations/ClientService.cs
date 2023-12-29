@@ -41,11 +41,9 @@ namespace Service.SashaProject.Implementations
                     Description = ex.Message,
                     StatusCode = StatusCode.InternalServerError
                 };
-            }
-                                                                    
+            }                                                       
             return baseResponse;
         }
-
         public async Task<IBaseResponse<bool>> DeleteClient(int id)
         {
             var baseResponse = new BaseResponse<bool>()
@@ -75,8 +73,7 @@ namespace Service.SashaProject.Implementations
             }
 
         }
-
-        public async Task<IBaseResponse<Client>> Edit(int id, ClientViewModel Model)
+        public async Task<IBaseResponse<Client>> Edit(int id, ClientViewModel modelRequest)
         {
             var baseResponse = new BaseResponse<Client>();
             try
@@ -85,14 +82,13 @@ namespace Service.SashaProject.Implementations
                 if (client == null)
                 {
                     baseResponse.StatusCode = StatusCode.CarNotFound;
-                    baseResponse.Description = "Property not found";
+                    baseResponse.Description = $"Client not found by id {id}";
                     return baseResponse;
                 }
 
-                client.ClientId = Model.ClientId;
-                client.Name = Model.Name;
-                client.LastName = Model.LastName;
-                client.PhoneNumber = Model.PhoneNumber;
+                client.Name = modelRequest.Name;
+                client.LastName = modelRequest.LastName;
+                client.PhoneNumber = modelRequest.PhoneNumber;
 
                 await _clientRep.Update(client);
 
@@ -109,7 +105,6 @@ namespace Service.SashaProject.Implementations
 
             }
         }
-
         public async Task<IBaseResponse<ClientViewModel>> Get(int id)
         {
             var baseResponse = new BaseResponse<ClientViewModel>();
@@ -142,7 +137,6 @@ namespace Service.SashaProject.Implementations
                 };
             }
         }
-
         public async Task<IBaseResponse<IEnumerable<Client>>> GetAllClients()
         {
             var baseResponse = new BaseResponse<IEnumerable<Client>>();

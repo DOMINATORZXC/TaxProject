@@ -22,7 +22,6 @@ namespace SashaProject.Controllers
         {
             return View();
         }
-
         [HttpGet]
         public async Task<IActionResult> GetAllClient()
         {
@@ -36,53 +35,55 @@ namespace SashaProject.Controllers
                 return View();
             }
             return RedirectToAction("Error");
-
         }
-            [HttpGet]
-            public async Task<IActionResult> GetClient(int id)
+        [HttpGet]
+        public async Task<IActionResult> GetClient(int id)
+        {
+            if (id == 0)
             {
-                if (id == 0)
-                {
-                    return View();
-                }
-                var response = await _clientService.Get(id);
-                if (response.StatusCode == Domain.SashaProject.Enum.StatusCode.OK)
-                {
-                    return View(response.Data);
-                }
-                return RedirectToAction("Error");
+                return View();
             }
-        
-            public async Task<IActionResult> DeleteClient(int id)
+            var response = await _clientService.Get(id);
+            if (response.StatusCode == Domain.SashaProject.Enum.StatusCode.OK)
             {
-                var response = await _clientService.DeleteClient(id);
-
-                return RedirectToAction("GetAllClient");
-
-            }
-            [HttpGet]
-            public async Task<IActionResult> SaveClient(int id)
-            {
-                var response = await _clientService.Get(id);
                 return View(response.Data);
             }
-            [HttpPost]
-            public async Task<IActionResult> CreateClient(ClientCreateRequest model)
-            {
-                 await _clientService.CreateClient(model);
-        
-                 return RedirectToAction("GetAllClient"); 
-            }
-            [HttpPost]
-            public async Task<IActionResult> EditClient(ClientViewModel model)
-            {
-                await _clientService.Edit(model.ClientId, model);
-                return RedirectToAction("GetAllClient");
-            }
-            [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-            public IActionResult Error()
-            {
-                return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-            }
+            return RedirectToAction("Error");
+        }
+        public async Task<IActionResult> DeleteClient(int id)
+        {
+            var response = await _clientService.DeleteClient(id);
+            return RedirectToAction("GetAllClient");
+        }
+        [HttpGet]
+        public async Task<IActionResult> CreateClient(int id)
+        {
+            var response = await _clientService.Get(id);
+            return View(response.Data);
+        }
+        [HttpGet]
+        public async Task<IActionResult> EditClient(int id)
+        {
+            var response = await _clientService.Get(id);
+            return View(response.Data);
+            
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateClient(ClientCreateRequest model)
+        {
+            await _clientService.CreateClient(model);
+            return RedirectToAction("GetAllClient"); 
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditClient(ClientViewModel modelRequest)
+        {
+            await _clientService.Edit(modelRequest.ClientId, modelRequest);
+            return RedirectToAction("GetAllClient");
+        }
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
     }
 }
